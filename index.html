@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Happy Birthday Isha 💕 | Forever Harshith & Isha</title>
+    
+    <!-- Google Fonts: Script / Handwritten & Premium Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Allura&family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            blue: '#e0f2fe',
+                            sky: '#38bdf8',
+                            darkblue: '#0369a1',
+                            pink: '#ffe4e6',
+                            rose: '#f43f5e',
+                            blush: '#fda4af',
+                            lavender: '#f3e8ff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        script: ['"Alex Brush"', '"Great Vibes"', 'cursive'],
+                        handwriting: ['"Dancing Script"', '"Caveat"', 'cursive'],
+                        allura: ['"Allura"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body class="bg-gradient-to-b from-blue-50/60 via-white to-pink-50/70 text-slate-800 font-sans overflow-x-hidden selection:bg-pink-300 selection:text-slate-900 min-h-screen">
+
+    <!-- Hidden YouTube Background Audio Player for "Jo Tum Mere Ho" (ilNt2bikxDI) -->
+    <div id="ytAudioContainer" class="hidden pointer-events-none">
+        <div id="ytPlayer"></div>
+    </div>
+
+    <!-- Delicate Pastel Particle Canvas Background -->
+    <canvas id="particleCanvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Top Navigation Bar (Fully Mobile Responsive) -->
+    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-2.5 sm:py-3 px-4 sm:px-6 backdrop-blur-xl bg-white/90 border-b border-pink-100/80 shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#hero" class="flex items-center gap-2 sm:gap-3 group">
+                <span class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-rose-400 via-pink-400 to-sky-400 flex items-center justify-center text-white shadow-md shadow-pink-200 group-hover:scale-105 transition-transform">
+                    <i data-lucide="heart" class="w-4 h-4 fill-current text-white animate-pulse"></i>
+                </span>
+                <div class="flex flex-col">
+                    <span class="font-script text-2xl sm:text-3xl text-rose-500 font-bold leading-none">
+                        Harshith & Isha
+                    </span>
+                    <span class="text-[9px] sm:text-[10px] text-sky-600 font-semibold tracking-widest uppercase">Eliyapadam to Eternity</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
+                <a href="#hero" class="hover:text-rose-500 transition-colors">Home</a>
+                <a href="#video" class="hover:text-rose-500 transition-colors">Our Video</a>
+                <a href="#story" class="hover:text-rose-500 transition-colors">Love Story</a>
+                <a href="#gallery" class="hover:text-rose-500 transition-colors">Pictures of Isha</a>
+                <a href="#dates-gallery" class="hover:text-rose-500 transition-colors">Our Dates</a>
+                <a href="#cake" class="hover:text-rose-500 transition-colors">Birthday Cake</a>
+                <a href="#letter" class="hover:text-rose-500 transition-colors">Love Letter</a>
+            </nav>
+
+            <!-- Actions: Music Button & Mobile Hamburger -->
+            <div class="flex items-center gap-2">
+                <!-- Floating Music Controller Button -->
+                <button id="audioToggle" class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white border border-pink-200 text-rose-500 hover:border-pink-300 hover:bg-pink-50 transition-all text-[11px] sm:text-xs font-semibold shadow-sm group">
+                    <div class="flex items-end gap-0.5 h-3.5 w-3">
+                        <span class="w-0.5 sm:w-1 bg-rose-400 rounded-full h-full animate-pulse"></span>
+                        <span class="w-0.5 sm:w-1 bg-pink-400 rounded-full h-2/3 animate-bounce"></span>
+                        <span class="w-0.5 sm:w-1 bg-sky-400 rounded-full h-4/5 animate-pulse"></span>
+                    </div>
+                    <span id="audioText" class="truncate max-w-[110px] sm:max-w-none">Jo Tum Mere Ho 🎵</span>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" class="lg:hidden p-1.5 rounded-xl bg-pink-50 text-rose-500 border border-pink-200 focus:outline-none" aria-label="Toggle navigation menu">
+                    <i data-lucide="menu" id="menuIconOpen" class="w-5 h-5"></i>
+                    <i data-lucide="x" id="menuIconClose" class="w-5 h-5 hidden"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Slide-Down Menu -->
+        <div id="mobileMenu" class="lg:hidden hidden px-4 pt-3 pb-4 mt-2 bg-white/95 border-t border-pink-100 rounded-2xl shadow-lg flex flex-col gap-3 text-sm font-medium text-slate-700">
+            <a href="#hero" class="mobile-nav-link py-1 hover:text-rose-500">Home</a>
+            <a href="#video" class="mobile-nav-link py-1 hover:text-rose-500">Our Video</a>
+            <a href="#story" class="mobile-nav-link py-1 hover:text-rose-500">Love Story</a>
+            <a href="#gallery" class="mobile-nav-link py-1 hover:text-rose-500">Pictures of Isha</a>
+            <a href="#dates-gallery" class="mobile-nav-link py-1 hover:text-rose-500">Our Dates</a>
+            <a href="#cake" class="mobile-nav-link py-1 hover:text-rose-500">Birthday Cake</a>
+            <a href="#letter" class="mobile-nav-link py-1 hover:text-rose-500">Love Letter</a>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="relative z-10 pt-16 sm:pt-20">
+
+        <!-- HERO SECTION -->
+        <section id="hero" class="min-h-[85vh] sm:min-h-[92vh] flex items-center justify-center relative py-8 sm:py-12 px-4">
+            <div class="max-w-5xl mx-auto text-center relative">
+                
+                <!-- Isha Hero Portrait Card -->
+                <div class="mb-5 sm:mb-6 flex justify-center">
+                    <div class="relative group">
+                        <div class="w-40 h-40 sm:w-56 sm:h-56 rounded-full p-1.5 sm:p-2 bg-gradient-to-tr from-pink-300 via-rose-300 to-sky-300 shadow-2xl shadow-pink-200 flex items-center justify-center group-hover:scale-105 transition-all">
+                            <img src="src/assets/isha_hero.png" alt="Birthday Princess Isha" class="w-full h-full object-cover object-top rounded-full border-2 sm:border-4 border-white shadow-md bg-pink-50">
+                        </div>
+                        <div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-0.5 sm:py-1 rounded-full bg-white border border-pink-200 shadow-md flex items-center gap-1.5 whitespace-nowrap">
+                            <span class="w-2 h-2 rounded-full bg-rose-400 animate-ping"></span>
+                            <span class="text-[11px] sm:text-xs font-bold text-rose-500 font-serif">Birthday Princess Isha 💕</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Age Gap / Destiny Pill Badge -->
+                <div class="inline-flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 rounded-full bg-white border border-pink-200 text-slate-700 text-[11px] sm:text-xs font-medium mb-3 sm:mb-4 shadow-sm max-w-full">
+                    <span class="text-sky-600 font-bold">Harshith (Oct 29, 1999)</span>
+                    <span class="text-rose-400 font-bold">❤️</span>
+                    <span class="text-rose-500 font-bold">Isha (Oct 8, 2006)</span>
+                    <span class="text-slate-400 block sm:inline">• 7 Yrs Age Gap</span>
+                </div>
+
+                <!-- Main Headline in Handwritten Script Font (Mobile Optimized) -->
+                <h1 class="font-serif text-2xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-2 text-slate-900 leading-tight">
+                    Happy Birthday, <br/>
+                    <span class="font-script font-normal text-5xl sm:text-8xl md:text-9xl bg-gradient-to-r from-rose-500 via-pink-500 to-sky-500 bg-clip-text text-transparent drop-shadow-sm block mt-1">
+                        My Dearest Isha 💕
+                    </span>
+                </h1>
+
+                <!-- Romantic Subtitle -->
+                <p class="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto mb-6 sm:mb-8 leading-relaxed font-light px-2">
+                    From the little cute girl seen near Eliyapadam to the queen who rules my entire heart. Today the world celebrates the most beautiful soul who brought infinite happiness into my life.
+                </p>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-4 px-2">
+                    <a href="#video" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-rose-500 to-sky-500 text-white font-semibold shadow-md shadow-pink-200 hover:scale-105 transition-all flex items-center gap-2 text-xs sm:text-sm">
+                        <i data-lucide="play" class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current"></i>
+                        <span>Watch Our Story Video</span>
+                    </a>
+                    <a href="#gallery" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white border border-pink-200 text-rose-600 font-semibold shadow-sm hover:bg-pink-50/50 transition-all flex items-center gap-1.5 text-xs sm:text-sm">
+                        <i data-lucide="image" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400"></i>
+                        <span>Pictures of Isha</span>
+                    </a>
+                    <a href="#cake" class="px-5 sm:px-6 py-2.5 sm:py-3 rounded-full bg-white border border-sky-200 text-sky-700 font-semibold shadow-sm hover:bg-sky-50/50 transition-all flex items-center gap-1.5 text-xs sm:text-sm">
+                        <span>Blow Candles 🎂</span>
+                    </a>
+                </div>
+
+                <!-- Harshith & Isha October Couple Card -->
+                <div class="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl mx-auto px-2">
+                    <div class="p-3 sm:p-3.5 rounded-2xl sm:rounded-3xl bg-white/90 border border-sky-100 shadow-sm flex items-center gap-3">
+                        <img src="src/assets/harshith_art.jpg" alt="Harshith" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover border-2 border-sky-200 shadow-sm">
+                        <div class="text-left">
+                            <div class="text-[11px] sm:text-xs text-sky-600 font-bold uppercase">Harshith</div>
+                            <div class="text-xs sm:text-sm font-serif font-bold text-slate-800">Oct 29, 1999</div>
+                            <div class="text-[10px] text-slate-400">Forever Yours 👦🏻</div>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-pink-50 to-sky-50 border border-pink-200 shadow-sm flex flex-col items-center justify-center text-center">
+                        <span class="font-script text-xl sm:text-2xl text-rose-500 font-bold">Destined by Fate</span>
+                        <span class="text-[10px] sm:text-[11px] text-slate-600 font-medium">Both October Souls ✨</span>
+                    </div>
+                    <div class="p-3 sm:p-3.5 rounded-2xl sm:rounded-3xl bg-white/90 border border-pink-100 shadow-sm flex items-center gap-3">
+                        <img src="src/assets/isha_hero.png" alt="Isha" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover object-top border-2 border-pink-200 shadow-sm">
+                        <div class="text-left">
+                            <div class="text-[11px] sm:text-xs text-rose-500 font-bold uppercase">Isha 💕</div>
+                            <div class="text-xs sm:text-sm font-serif font-bold text-slate-800">Oct 8, 2006</div>
+                            <div class="text-[10px] text-slate-400">Birthday Princess 👧🏻</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- VIDEO SHOWCASE SECTION -->
+        <section id="video" class="py-16 sm:py-20 px-4 relative bg-white/75 border-y border-pink-100">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-[11px] sm:text-xs font-semibold uppercase tracking-wider mb-2 sm:mb-3">
+                    <i data-lucide="film" class="w-3.5 h-3.5 text-sky-500"></i>
+                    <span>Our Story in Motion</span>
+                </div>
+                <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-2">
+                    Our Love Story Video 🎬
+                </h2>
+                <p class="text-slate-600 max-w-lg mx-auto mb-6 sm:mb-8 text-xs sm:text-sm">
+                    Watch our heartwarming video. Video is muted so the romantic song <i>"Jo Tum Mere Ho"</i> plays seamlessly!
+                </p>
+
+                <!-- Video Frame -->
+                <div class="relative mx-auto rounded-2xl sm:rounded-3xl p-2 sm:p-3 bg-gradient-to-tr from-pink-200 via-white to-sky-200 shadow-xl max-w-3xl">
+                    <div class="rounded-xl sm:rounded-2xl overflow-hidden bg-slate-950 aspect-video relative shadow-inner">
+                        <video id="storyVideo" muted autoplay loop playsinline controls class="w-full h-full object-contain">
+                            <source src="src/assets/love_story_video.mp4" type="video/mp4">
+                            Your browser does not support HTML5 video.
+                        </video>
+                    </div>
+                </div>
+
+                <div class="mt-3 sm:mt-4 flex items-center justify-center gap-1.5 text-xs text-slate-500">
+                    <i data-lucide="volume-x" class="w-3.5 h-3.5 text-rose-400"></i>
+                    <span>Video is muted • Enjoying "Jo Tum Mere Ho" background song</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- PICTURES OF ISHA GALLERY SECTION -->
+        <section id="gallery" class="py-16 sm:py-20 px-4 relative bg-gradient-to-b from-white via-pink-50/40 to-white">
+            <div class="max-w-6xl mx-auto text-center">
+                <span class="text-rose-500 text-xs font-bold tracking-widest uppercase mb-2 block">Cherished Gallery</span>
+                <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+                    Pictures of Isha 💕
+                </h2>
+                <p class="text-slate-600 max-w-md mx-auto mb-8 sm:mb-12 text-xs sm:text-sm">
+                    From the cute little girl in Eliyapadam to the radiant, gorgeous soul she is today.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    <!-- Photo 1: Isha Childhood Photo -->
+                    <div class="bg-white p-3 rounded-2xl sm:rounded-3xl border-2 border-pink-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-xl sm:rounded-2xl overflow-hidden h-64 sm:h-72 mb-3 bg-slate-100 relative">
+                            <img src="src/assets/isha_childhood.jpg" alt="Isha Childhood" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-rose-500/90 text-white text-[10px] font-bold">Childhood 👶🏻</div>
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-rose-600 block">The Little Cutie</span>
+                        <span class="text-xs text-slate-500">Eliyapadam Days Glance ✨</span>
+                    </div>
+
+                    <!-- Photo 2: Isha College Sitting Photo -->
+                    <div class="bg-white p-3 rounded-2xl sm:rounded-3xl border-2 border-sky-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-2xl overflow-hidden h-64 sm:h-72 mb-3 bg-slate-100 relative">
+                            <img src="src/assets/isha_college_sitting.png" alt="Isha College" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-sky-500/90 text-white text-[10px] font-bold">Campus Days 🎓</div>
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-sky-600 block">Her Sweetest Smile</span>
+                        <span class="text-xs text-slate-500">Victoria College Smiles 🌿</span>
+                    </div>
+
+                    <!-- Photo 3: Isha Street Smile Photo -->
+                    <div class="bg-white p-3 rounded-2xl sm:rounded-3xl border-2 border-pink-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-2xl overflow-hidden h-64 sm:h-72 mb-3 bg-slate-100 relative">
+                            <img src="src/assets/isha_street_smile.jpg" alt="Isha Street Smile" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-pink-500/90 text-white text-[10px] font-bold">Pure Joy 🌸</div>
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-pink-600 block">Breeze & Laughter</span>
+                        <span class="text-xs text-slate-500">Lighting Up Every Street ☀️</span>
+                    </div>
+
+                    <!-- Photo 4: Isha Ethnic Elegance -->
+                    <div class="bg-white p-3 rounded-2xl sm:rounded-3xl border-2 border-amber-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-2xl overflow-hidden h-64 sm:h-72 mb-3 bg-slate-100 relative">
+                            <img src="src/assets/isha_hero.png" alt="Isha Ethnic Elegance" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-2 right-2 px-2.5 py-0.5 rounded-full bg-amber-500/90 text-white text-[10px] font-bold">Royal Queen 👑</div>
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-amber-700 block">Birthday Princess</span>
+                        <span class="text-xs text-slate-500">Harshith's Forever Love 💕</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- OUR LOVE STORY & TIMELINE (MOBILE RESPONSIVE) -->
+        <section id="story" class="py-16 sm:py-24 px-4 relative">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12 sm:mb-16">
+                    <span class="text-rose-500 text-xs font-bold tracking-widest uppercase mb-2 block">Our True Story</span>
+                    <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+                        How Fate Wrote Our Story ✨
+                    </h2>
+                    <p class="text-slate-600 max-w-md mx-auto text-xs sm:text-sm">
+                        From childhood glances in Eliyapadam to our sacred temple prayers — every step of our journey.
+                    </p>
+                </div>
+
+                <!-- Story Cards Flow (Mobile friendly line) -->
+                <div class="space-y-8 sm:space-y-12 relative before:absolute before:inset-0 before:left-4 sm:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-pink-200 before:via-sky-200 before:to-pink-300">
+                    
+                    <!-- Chapter 1: Eliyapadam Roots -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pr-8 sm:text-right w-full">
+                            <div class="w-full bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-pink-100 shadow-md group-hover:border-pink-300 transition-all">
+                                <div class="flex items-center sm:justify-end gap-1.5 text-xs font-bold text-sky-600 mb-1">
+                                    <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                                    <span>Neighborhood Roots</span>
+                                </div>
+                                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 mb-2">Eliyapadam Days</h3>
+                                
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-pink-200 shadow-sm sm:ml-auto mb-3">
+                                    <img src="src/assets/isha_childhood.jpg" alt="Childhood Isha" class="w-full h-full object-cover">
+                                </div>
+
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Isha's house was nearest to Harshith's mother's home. Years ago, he casually saw this little cute girl around, never knowing back then that destiny had chosen her to be his soulmate.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-pink-400 to-sky-400 text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white z-10">
+                            1
+                        </div>
+                        <div class="sm:w-1/2 sm:pl-8 hidden sm:block">
+                            <span class="text-xs font-semibold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-100 shadow-sm">Years Ago • The Innocent Glance</span>
+                        </div>
+                    </div>
+
+                    <!-- Chapter 2: The 2026 Instagram Spark -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center sm:flex-row-reverse pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pl-8 sm:text-left w-full">
+                            <div class="w-full bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-sky-100 shadow-md group-hover:border-sky-300 transition-all">
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-rose-500 mb-1">
+                                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                    <span>Year 2026 • Instagram Spark</span>
+                                </div>
+                                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 mb-2">"Hi Isha from Eliyapadam ?"</h3>
+                                <div class="p-2.5 sm:p-3 bg-pink-50 rounded-xl border border-pink-200 text-xs text-rose-700 font-mono mb-3 inline-block">
+                                    💬 Harshith: "Hi Isha from Eliyapadam ?"
+                                </div>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Seeing her randomly on Instagram in 2026, he reached out with that sweet message. And just like that, conversations flowed into midnight calls, laughs, and pure connection.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-sky-400 to-pink-400 text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white z-10">
+                            2
+                        </div>
+                        <div class="sm:w-1/2 sm:pr-8 hidden sm:block text-right">
+                            <span class="text-xs font-semibold text-slate-400 bg-white px-3 py-1 rounded-full border border-slate-100 shadow-sm">2026 • Reconnecting</span>
+                        </div>
+                    </div>
+
+                    <!-- Milestone 1: May 31 - Unexpected 1st Meetup (Fruits Shop) -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pr-8 sm:text-right w-full">
+                            <div class="w-full bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-pink-100 shadow-md group-hover:border-pink-300 transition-all">
+                                <div class="flex items-center sm:justify-end gap-1.5 text-xs font-bold text-amber-600 mb-1">
+                                    <span>🍎🍓 May 31</span>
+                                </div>
+                                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 mb-1">Unexpected 1st Meetup</h3>
+                                <p class="text-xs text-rose-500 font-semibold mb-2">Location: Fruits Shop</p>
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    A surprise encounter at the fruits shop! The moment their eyes met in person, both felt those unforgettable butterflies.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-amber-400 to-rose-400 text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white z-10">
+                            3
+                        </div>
+                        <div class="sm:w-1/2 sm:pl-8 hidden sm:block">
+                            <span class="text-xs font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 shadow-sm">May 31 • Fruits Shop</span>
+                        </div>
+                    </div>
+
+                    <!-- Milestone 2: June 19 - 1st Date (Social Kitchen) [WITH REAL PHOTO] -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center sm:flex-row-reverse pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pl-8 sm:text-left w-full">
+                            <div class="w-full bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-sky-100 shadow-lg group-hover:border-sky-300 transition-all">
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-sky-600 mb-1">
+                                    <span>🍽️ June 19</span>
+                                </div>
+                                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 mb-1">1st Official Date</h3>
+                                <p class="text-xs text-sky-600 font-semibold mb-2 sm:mb-3">Location: Social Kitchen</p>
+                                
+                                <div class="rounded-xl sm:rounded-2xl overflow-hidden mb-3 border border-sky-100 shadow-sm">
+                                    <img src="src/assets/social_kitchen_date.jpg" alt="1st Date at Social Kitchen" class="w-full h-48 sm:h-56 object-cover hover:scale-105 transition-transform duration-500">
+                                </div>
+
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Sitting together across the table at Social Kitchen, sharing heartfelt smiles, great food, and realizing how perfectly they belong together.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-sky-400 to-blue-500 text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white z-10">
+                            4
+                        </div>
+                        <div class="sm:w-1/2 sm:pr-8 hidden sm:block text-right">
+                            <span class="text-xs font-semibold text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-200 shadow-sm">June 19 • Social Kitchen</span>
+                        </div>
+                    </div>
+
+                    <!-- Milestone 3: July 17 - Proposed (WhatsApp) -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pr-8 sm:text-right w-full">
+                            <div class="w-full bg-gradient-to-tr from-rose-50 to-pink-50 p-5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-rose-200 shadow-md group-hover:border-rose-400 transition-all">
+                                <div class="flex items-center sm:justify-end gap-1.5 text-xs font-bold text-rose-600 mb-1">
+                                    <span>💍 July 17</span>
+                                </div>
+                                <h3 class="font-serif text-xl sm:text-2xl font-bold text-rose-600 mb-1">The Proposal 💖</h3>
+                                <p class="text-xs text-slate-600 font-semibold mb-2">Via WhatsApp Message</p>
+                                <p class="text-slate-700 text-xs sm:text-sm leading-relaxed font-medium">
+                                    Harshith poured his whole heart out and asked Isha to be his life partner forever. A life-changing, unforgettable confession of pure love!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-rose-500 to-pink-500 text-white flex items-center justify-center font-bold text-xs sm:text-sm shadow-lg border-2 border-white z-10 animate-bounce-slow">
+                            💍
+                        </div>
+                        <div class="sm:w-1/2 sm:pl-8 hidden sm:block">
+                            <span class="text-xs font-bold text-rose-600 bg-rose-100 px-3.5 py-1.5 rounded-full border border-rose-300 shadow-sm">July 17 • Proposal</span>
+                        </div>
+                    </div>
+
+                    <!-- Milestone 4: July 26 - First Meetup Date (Cafe Bake & Cake) [WITH REAL PHOTO] -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center sm:flex-row-reverse pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pl-8 sm:text-left w-full">
+                            <div class="w-full bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-pink-100 shadow-lg group-hover:border-pink-300 transition-all">
+                                <div class="flex items-center gap-1.5 text-xs font-bold text-pink-600 mb-1">
+                                    <span>☕🍰 July 26</span>
+                                </div>
+                                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 mb-1">First Post-Proposal Date</h3>
+                                <p class="text-xs text-pink-600 font-semibold mb-2 sm:mb-3">Location: Cafe Bake & Cake</p>
+                                
+                                <div class="rounded-xl sm:rounded-2xl overflow-hidden mb-3 border border-pink-100 shadow-sm">
+                                    <img src="src/assets/bake_cake_date.jpg" alt="Roses for Isha at Bake & Cake" class="w-full h-48 sm:h-56 object-cover hover:scale-105 transition-transform duration-500">
+                                </div>
+
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Meeting as committed soulmates! Harshith welcoming Isha with a gorgeous bouquet of red and white roses at Cafe Bake & Cake.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-pink-400 to-rose-400 text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white z-10">
+                            6
+                        </div>
+                        <div class="sm:w-1/2 sm:pr-8 hidden sm:block text-right">
+                            <span class="text-xs font-semibold text-pink-600 bg-pink-50 px-3 py-1 rounded-full border border-pink-200 shadow-sm">July 26 • Cafe Bake & Cake</span>
+                        </div>
+                    </div>
+
+                    <!-- Milestone 5: Aug 20 - Temple Date (Traditional) [WITH REAL PHOTO] -->
+                    <div class="relative flex flex-col sm:flex-row items-start sm:items-center pl-10 sm:pl-0 group">
+                        <div class="flex items-center sm:w-1/2 sm:pr-8 sm:text-right w-full">
+                            <div class="w-full bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-amber-100 shadow-lg group-hover:border-amber-300 transition-all">
+                                <div class="flex items-center sm:justify-end gap-1.5 text-xs font-bold text-amber-700 mb-1">
+                                    <span>🛕✨ August 20</span>
+                                </div>
+                                <h3 class="font-serif text-lg sm:text-xl font-bold text-slate-900 mb-1">Temple Date (Traditional)</h3>
+                                <p class="text-xs text-amber-600 font-semibold mb-2 sm:mb-3">Divine Blessings for Lifelong Togetherness</p>
+                                
+                                <div class="rounded-xl sm:rounded-2xl overflow-hidden mb-3 border border-amber-100 shadow-sm">
+                                    <img src="src/assets/temple_date.jpg" alt="Harshith and Isha Temple Date" class="w-full h-48 sm:h-56 object-cover object-top hover:scale-105 transition-transform duration-500">
+                                </div>
+
+                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                                    Dressed gracefully in traditional attire with tilak/chandanam, standing together before the deity, praying for endless love, peace, and togetherness forever.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute left-4 sm:left-1/2 -translate-x-1/2 top-4 sm:top-auto w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-amber-500 to-rose-400 text-white flex items-center justify-center font-bold text-xs shadow-md border-2 border-white z-10">
+                            7
+                        </div>
+                        <div class="sm:w-1/2 sm:pl-8 hidden sm:block">
+                            <span class="text-xs font-semibold text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 shadow-sm">Aug 20 • Temple Date</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- OUR DATES MEMORIES GALLERY -->
+        <section id="dates-gallery" class="py-16 sm:py-20 px-4 bg-white/80 border-y border-pink-100">
+            <div class="max-w-6xl mx-auto text-center">
+                <span class="text-rose-500 text-xs font-bold tracking-widest uppercase mb-2 block">Unforgettable Dates</span>
+                <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+                    Our Date Moments 📸
+                </h2>
+                <p class="text-slate-600 max-w-md mx-auto mb-8 sm:mb-12 text-xs sm:text-sm">
+                    Social Kitchen, Cafe Bake & Cake, and our sacred Temple Date.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                    <!-- Date 1: Social Kitchen -->
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl border border-sky-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-xl sm:rounded-2xl overflow-hidden h-60 sm:h-72 mb-3">
+                            <img src="src/assets/social_kitchen_date.jpg" alt="Social Kitchen Date" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-sky-600 block">June 19 • 1st Date</span>
+                        <span class="text-xs text-slate-400 font-medium">Social Kitchen 🍽️</span>
+                    </div>
+
+                    <!-- Date 2: Bake & Cake Bouquet -->
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl border border-pink-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-2xl overflow-hidden h-60 sm:h-72 mb-3">
+                            <img src="src/assets/bake_cake_date.jpg" alt="Cafe Bake & Cake Date" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-pink-600 block">July 26 • Cafe Date</span>
+                        <span class="text-xs text-slate-400 font-medium">Roses for My Queen 🌹</span>
+                    </div>
+
+                    <!-- Date 3: Temple Date -->
+                    <div class="bg-white p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl border border-amber-200 shadow-md hover:shadow-xl transition-all group">
+                        <div class="rounded-2xl overflow-hidden h-60 sm:h-72 mb-3">
+                            <img src="src/assets/temple_date.jpg" alt="Temple Date" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <span class="font-script text-xl sm:text-2xl text-amber-700 block">Aug 20 • Temple Date</span>
+                        <span class="text-xs text-slate-400 font-medium">Traditional & Divine Blessings 🛕</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INTERACTIVE BIRTHDAY CAKE SECTION -->
+        <section id="cake" class="py-16 sm:py-24 px-4 relative">
+            <div class="max-w-4xl mx-auto text-center">
+                <span class="text-rose-500 text-xs font-bold tracking-widest uppercase mb-2 block">Make a Birthday Wish</span>
+                <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+                    Blow the Birthday Candles 🎂
+                </h2>
+                <p class="text-slate-600 max-w-md mx-auto mb-8 sm:mb-10 text-xs sm:text-sm">
+                    Tap the candle flames or press the button below to blow out your candles and release confetti fireworks!
+                </p>
+
+                <!-- Cake Graphic -->
+                <div class="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto flex items-center justify-center mb-6">
+                    <div id="cakeGraphic" class="w-full h-full relative cursor-pointer group">
+                        
+                        <!-- Candles Flames -->
+                        <div class="absolute top-[26%] left-1/2 -translate-x-1/2 flex justify-center items-center gap-6 sm:gap-7 z-30">
+                            <!-- Candle 1 -->
+                            <div class="relative flex flex-col items-center candle-unit" data-candle="1">
+                                <div class="flame w-3.5 sm:w-4 h-5 sm:h-6 rounded-full bg-gradient-to-t from-orange-400 via-yellow-200 to-white shadow-[0_0_15px_#ffaa00] animate-flicker transition-all duration-500"></div>
+                                <div class="w-2 h-12 sm:h-14 bg-gradient-to-b from-pink-300 to-rose-400 rounded-sm"></div>
+                            </div>
+                            <!-- Candle 2 (Center) -->
+                            <div class="relative flex flex-col items-center candle-unit -mt-2" data-candle="2">
+                                <div class="flame w-4 sm:w-5 h-6 sm:h-7 rounded-full bg-gradient-to-t from-orange-400 via-yellow-200 to-white shadow-[0_0_20px_#ffaa00] animate-flicker transition-all duration-500"></div>
+                                <div class="w-2.5 h-14 sm:h-16 bg-gradient-to-b from-sky-300 to-blue-400 rounded-sm"></div>
+                            </div>
+                            <!-- Candle 3 -->
+                            <div class="relative flex flex-col items-center candle-unit" data-candle="3">
+                                <div class="flame w-3.5 sm:w-4 h-5 sm:h-6 rounded-full bg-gradient-to-t from-orange-400 via-yellow-200 to-white shadow-[0_0_15px_#ffaa00] animate-flicker transition-all duration-500"></div>
+                                <div class="w-2 h-12 sm:h-14 bg-gradient-to-b from-pink-300 to-rose-400 rounded-sm"></div>
+                            </div>
+                        </div>
+
+                        <!-- 3-Tier Pastel Pink & Sky Blue Cake -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 w-56 sm:w-64 h-44 sm:h-48 flex flex-col items-center justify-end z-20">
+                            <div class="w-32 sm:w-36 h-10 sm:h-12 bg-gradient-to-r from-pink-300 via-rose-200 to-pink-300 rounded-t-2xl border-t-2 border-white shadow-md relative flex items-center justify-center">
+                                <span class="text-[11px] sm:text-xs font-script font-bold text-rose-700">Isha 💕</span>
+                            </div>
+                            <div class="w-44 sm:w-48 h-12 sm:h-14 bg-gradient-to-r from-sky-200 via-blue-100 to-sky-200 rounded-t-2xl border-t-2 border-white shadow-md relative flex items-center justify-center">
+                                <span class="text-[10px] sm:text-xs font-serif text-sky-800 font-bold tracking-wider">OCTOBER 8</span>
+                            </div>
+                            <div class="w-56 sm:w-60 h-14 sm:h-16 bg-gradient-to-r from-rose-300 via-pink-200 to-sky-300 rounded-t-3xl border-t-2 border-white shadow-lg relative flex items-center justify-center">
+                                <div class="flex gap-2">
+                                    <span class="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white/80"></span>
+                                    <span class="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white/80"></span>
+                                    <span class="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white/80"></span>
+                                    <span class="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full bg-white/80"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cake Stand Plate -->
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-60 sm:w-68 h-3.5 sm:h-4 bg-gradient-to-r from-slate-200 via-white to-slate-200 rounded-full shadow-md z-10"></div>
+                    </div>
+                </div>
+
+                <button id="blowCandlesBtn" class="px-7 sm:px-8 py-3 sm:py-3.5 rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-sky-500 text-white font-bold shadow-lg shadow-pink-200 hover:scale-105 transition-all flex items-center gap-2 mx-auto text-xs sm:text-sm">
+                    <i data-lucide="wind" class="w-4 h-4"></i>
+                    <span id="blowBtnText">Blow Out Candles 🎂</span>
+                </button>
+
+                <!-- Cake Surprise Modal -->
+                <div id="cakeSurpriseModal" class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+                    <div class="bg-white border border-pink-200 rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center relative shadow-2xl scale-90 transition-all duration-500 modal-content">
+                        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-pink-100 border border-pink-300 text-rose-500 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                            <i data-lucide="party-popper" class="w-7 h-7 sm:w-8 sm:h-8"></i>
+                        </div>
+                        <h3 class="font-serif text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Happy Birthday Isha! ✨</h3>
+                        <p class="text-rose-500 font-script text-2xl sm:text-3xl mb-3 sm:mb-4">"You are Harshith's greatest blessing."</p>
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-5 sm:mb-6">
+                            May your life be filled with boundless happiness, radiant smiles, and sweetest love. Happy Birthday to the girl who stole my heart!
+                        </p>
+                        <button id="closeCakeModalBtn" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-rose-500 to-sky-500 text-white text-xs sm:text-sm font-semibold shadow-md hover:scale-105 transition-all">
+                            Thank You, Harshith 💕
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- WAX SEALED LOVE LETTER SECTION -->
+        <section id="letter" class="py-16 sm:py-24 px-4 bg-white/80 border-t border-pink-100">
+            <div class="max-w-3xl mx-auto text-center">
+                <span class="text-rose-500 text-xs font-bold tracking-widest uppercase mb-2 block">Special Note</span>
+                <h2 class="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-slate-900 mb-2 sm:mb-3">
+                    A Birthday Love Letter 💌
+                </h2>
+                <p class="text-slate-600 max-w-md mx-auto mb-8 sm:mb-10 text-xs sm:text-sm">
+                    Tap the golden wax seal below to unfold your personal handwritten birthday message from Harshith.
+                </p>
+
+                <!-- Envelope Box -->
+                <div class="relative max-w-md mx-auto px-2">
+                    <div id="envelopeContainer" class="envelope-box cursor-pointer group relative">
+                        <div class="w-full h-56 sm:h-64 bg-gradient-to-tr from-pink-100 via-white to-sky-100 border-2 border-pink-200 rounded-3xl shadow-xl flex flex-col items-center justify-center p-5 sm:p-6 relative overflow-hidden group-hover:border-rose-300 transition-all">
+                            
+                            <div class="absolute inset-0 border border-pink-300/40 m-2.5 sm:m-3 rounded-2xl pointer-events-none"></div>
+
+                            <span class="font-script text-3xl sm:text-4xl text-rose-600 mb-1">To My Dearest Isha</span>
+                            <span class="text-[10px] sm:text-[11px] text-slate-500 uppercase tracking-widest mb-4 sm:mb-6 font-semibold">From Harshith With Love</span>
+
+                            <!-- Golden Seal -->
+                            <button id="openLetterBtn" class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-300 to-amber-500 shadow-md border-2 border-white flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                                <i data-lucide="heart" class="w-6 h-6 sm:w-7 sm:h-7 text-amber-950 fill-current"></i>
+                            </button>
+                            <span class="text-[11px] sm:text-xs text-amber-800 font-bold mt-2.5 sm:mt-3">Click Seal to Open</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Letter Modal Window (Mobile Optimized) -->
+                <div id="letterModal" class="fixed inset-0 z-50 flex items-center justify-center px-3 sm:px-4 bg-slate-900/60 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-500">
+                    <div class="bg-[#fffdfa] border-2 border-pink-200 rounded-2xl sm:rounded-3xl p-5 sm:p-10 max-w-xl w-full text-left relative shadow-2xl max-h-[85vh] overflow-y-auto font-handwriting text-lg sm:text-2xl text-slate-800 leading-relaxed scale-95 transition-all duration-500 modal-letter">
+                        
+                        <button id="closeLetterModalBtn" class="absolute top-3 sm:top-4 right-3 sm:right-4 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-pink-100 border border-pink-200 text-rose-500 flex items-center justify-center hover:bg-pink-200 transition-all">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+
+                        <div class="text-rose-500 font-sans text-[11px] sm:text-xs font-bold tracking-widest uppercase mb-3 sm:mb-4">
+                            My Dearest Isha 💕
+                        </div>
+
+                        <p class="mb-3 sm:mb-4">
+                            Happy Birthday, my princess!
+                        </p>
+
+                        <p class="mb-3 sm:mb-4">
+                            Who would have thought that the cute neighborhood girl I randomly saw near Eliyapadam years ago would one day become the queen of my heart and the center of my life?
+                        </p>
+
+                        <p class="mb-3 sm:mb-4">
+                            When I sent you that Instagram message asking <i>"Hi Isha from Eliyapadam ?"</i>, fate had already written our beautiful journey. From our unexpected first meetup at the fruits shop, our memorable first date at Social Kitchen, proposing to you on WhatsApp on July 17, our sweet date at Cafe Bake & Cake, to seeking divine blessings at the temple on August 20... every single second with you is a blessing.
+                        </p>
+
+                        <p class="mb-3 sm:mb-4">
+                            Though we are 7 years apart, our hearts beat with the exact same love. You are my peace, my strength, and my forever dream.
+                        </p>
+
+                        <p class="mb-4 sm:mb-6">
+                            I promise to love you, cherish you, protect you, and make you smile for all the years to come.
+                        </p>
+
+                        <div class="pt-3 sm:pt-4 border-t border-pink-200 flex flex-col items-end text-right font-sans">
+                            <span class="font-script text-2xl sm:text-3xl text-rose-500">Forever Yours,</span>
+                            <span class="font-serif text-base sm:text-lg font-bold text-slate-800">Harshith ❤️</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-8 sm:py-10 border-t border-pink-100 text-center text-slate-500 text-[11px] sm:text-xs relative z-10 bg-white/90 px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="font-script text-3xl sm:text-4xl text-rose-500 mb-1">Harshith & Isha</div>
+            <p class="mb-2">Dedicated with infinite love & happiness for Isha's Birthday 💕</p>
+            <div class="text-slate-400 font-medium">October 29, 1999 • October 8, 2006 • Eliyapadam to Eternity</div>
+        </div>
+    </footer>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- JS Scripts -->
+    <script src="src/js/background.js"></script>
+    <script src="src/js/cake.js"></script>
+    <script src="src/js/letter.js"></script>
+    <script src="src/js/audio.js"></script>
+    <script src="src/js/main.js"></script>
+</body>
+</html>

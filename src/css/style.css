@@ -1,0 +1,146 @@
+/* Custom Styling for Isha's Birthday Website - Pastel White, Rose Pink & Baby Blue Theme */
+
+/* Keyframe Animations */
+@keyframes flicker {
+    0%, 100% {
+        transform: scale(1) rotate(-1deg);
+        opacity: 0.95;
+        box-shadow: 0 0 12px #ffaa00, 0 0 20px #ff7700;
+    }
+    25% {
+        transform: scale(1.08) rotate(1.5deg);
+        opacity: 1;
+        box-shadow: 0 0 16px #ffbb00, 0 0 26px #ff6600;
+    }
+    50% {
+        transform: scale(0.92) rotate(-2deg);
+        opacity: 0.85;
+        box-shadow: 0 0 10px #ff9900, 0 0 18px #ff5500;
+    }
+    75% {
+        transform: scale(1.05) rotate(1deg);
+        opacity: 0.98;
+        box-shadow: 0 0 14px #ffbb00, 0 0 22px #ff7700;
+    }
+}
+
+.animate-flicker {
+    animation: flicker 1.2s infinite ease-in-out;
+}
+
+@keyframes bounceSlow {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.animate-bounce-slow {
+    animation: bounceSlow 3s infinite ease-in-out;
+}
+
+/* 3D Card Flip Styles */
+.flip-card {
+    perspective: 1000px;
+}
+
+.flip-card-inner {
+    transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.flip-card-back {
+    transform: rotateY(180deg);
+}
+
+/* Candle Extinction */
+.flame.extinguished {
+    transform: scale(0) !important;
+    opacity: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Smoke Particles */
+@keyframes smokeRise {
+    0% {
+        transform: translateY(0) scale(0.5);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-25px) scale(2);
+        opacity: 0;
+    }
+}
+
+.smoke-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(180, 180, 180, 0.4);
+    border-radius: 50%;
+    animation: smokeRise 1.4s forwards ease-out;
+    pointer-events: none;
+}
+
+/* Modal Open Transitions */
+.modal-open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.modal-open .modal-content,
+.modal-open .modal-letter {
+    transform: scale(1) !important;
+}
+
+/* Floating Lantern Animation */
+@keyframes lanternFloat {
+    0% {
+        transform: translateY(100%) scale(0.7);
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 0.95;
+    }
+    100% {
+        transform: translateY(-260%) scale(1.05) translateX(var(--drift-x, 20px));
+        opacity: 0;
+    }
+}
+
+.floating-lantern {
+    position: absolute;
+    bottom: -40px;
+    animation: lanternFloat 6.5s forwards ease-out;
+}
+
+/* Smooth modern scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #f43f5e;
+}
