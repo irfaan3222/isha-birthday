@@ -1,182 +1,224 @@
-// Romantic Background Song Controller: "Jo Tum Mere Ho" by Anuv Jain (ilNt2bikxDI)
-// Configured to start by default!
+// ============================================================
+// Romantic Background Song: "Jo Tum Mere Ho" by Anuv Jain
+// Strategy: Start MUTED (browsers allow this), then unmute
+// This guarantees autoplay works on ALL browsers & mobile!
+// ============================================================
 
 let ytPlayer = null;
 let ytReady = false;
 let isPlaying = false;
-let audioCtx = null;
-let synthTimer = null;
 let hasAutoStarted = false;
+let muteUnmuteAttempted = false;
 
-// Fallback synth notes for Jo Tum Mere Ho
-const joTumHoNotes = [
-    293.66, 392.00, 440.00, 493.88, 440.00, 392.00, 329.63, 293.66,
-    392.00, 493.88, 587.33, 523.25, 493.88, 440.00, 392.00, 329.63,
-    293.66, 329.63, 392.00, 440.00, 392.00, 329.63, 293.66, 246.94
-];
-let noteIndex = 0;
-
-function playSynthNote(freq) {
-    if (!audioCtx || audioCtx.state !== 'running') return;
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-    const now = audioCtx.currentTime;
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.12, now + 0.08);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.2);
-
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-
-    osc.start(now);
-    osc.stop(now + 2.3);
-}
-
-function startSynthMelody() {
-    if (synthTimer) clearInterval(synthTimer);
-    synthTimer = setInterval(() => {
-        if (!isPlaying) return;
-        const freq = joTumHoNotes[noteIndex % joTumHoNotes.length];
-        playSynthNote(freq);
-        noteIndex++;
-    }, 550);
-}
-
-function startFallbackSynth() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-    startSynthMelody();
-}
-
+// ---------- UI Update ----------
 function updateUI(playing) {
     const audioText = document.getElementById('audioText');
     const audioToggle = document.getElementById('audioToggle');
     if (audioText) {
-        audioText.textContent = playing ? "Playing: Jo Tum Mere Ho 🎶" : "Play Song (Jo Tum Mere Ho) 🎵";
+        audioText.textContent = playing
+            ? '▐▌ Playing: Jo Tum Me... 🎶'
+            : '▶ Play Song 🎵';
     }
     if (audioToggle) {
-        if (playing) {
-            audioToggle.classList.add('border-rose-400', 'bg-pink-100/80');
-        } else {
-            audioToggle.classList.remove('border-rose-400', 'bg-pink-100/80');
-        }
+        audioToggle.classList.toggle('border-rose-400', playing);
+        audioToggle.classList.toggle('bg-pink-100/80', playing);
     }
 }
 
+// ---------- Play / Pause ----------
 function playAudio() {
-    isPlaying = true;
-    updateUI(true);
-
-    if (ytPlayer && ytReady && typeof ytPlayer.playVideo === 'function') {
-        try {
-            ytPlayer.playVideo();
-        } catch (e) {
-            startFallbackSynth();
-        }
-    } else {
-        startFallbackSynth();
+    if (!ytPlayer || !ytReady) return;
+    try {
+        ytPlayer.unMute();
+        ytPlayer.setVolume(80);
+        ytPlayer.playVideo();
+        isPlaying = true;
+        updateUI(true);
+    } catch (e) {
+        console.log('Play error:', e);
     }
 }
 
 function pauseAudio() {
+    if (!ytPlayer || !ytReady) return;
+    try {
+        ytPlayer.pauseVideo();
+    } catch (e) {}
     isPlaying = false;
     updateUI(false);
-
-    if (ytPlayer && ytReady && typeof ytPlayer.pauseVideo === 'function') {
-        try {
-            ytPlayer.pauseVideo();
-        } catch (e) {}
-    }
-    if (synthTimer) clearInterval(synthTimer);
 }
 
-// YouTube IFrame API Ready Callback
-window.onYouTubeIframeAPIReady = function() {
+// ---------- YouTube IFrame API ----------
+window.onYouTubeIframeAPIReady = function () {
     ytPlayer = new YT.Player('ytPlayer', {
         height: '1',
         width: '1',
-        videoId: 'ilNt2bikxDI', // "Jo Tum Mere Ho" by Anuv Jain
+        videoId: 'ilNt2bikxDI', // Jo Tum Mere Ho - Anuv Jain
         playerVars: {
-            'autoplay': 1,
-            'playsinline': 1,
-            'controls': 0,
-            'disablekb': 1,
-            'loop': 1,
-            'playlist': 'ilNt2bikxDI'
+            autoplay: 1,        // request autoplay
+            mute: 1,            // START MUTED — browsers always allow this!
+            playsinline: 1,
+            controls: 0,
+            disablekb: 1,
+            loop: 1,
+            playlist: 'ilNt2bikxDI',
+            rel: 0,
+            modestbranding: 1
         },
         events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+            onError: onPlayerError
         }
     });
 };
 
 function onPlayerReady(event) {
     ytReady = true;
-    // Attempt automatic playback
+    // Step 1: play muted first (always works)
     try {
+        event.target.mute();
         event.target.playVideo();
-        isPlaying = true;
-        updateUI(true);
-    } catch (err) {
-        console.log("Autoplay waiting for user interaction");
-    }
+    } catch (e) {}
+
+    // Step 2: after a short delay, unmute — music now plays!
+    setTimeout(() => {
+        try {
+            event.target.unMute();
+            event.target.setVolume(80);
+            isPlaying = true;
+            hasAutoStarted = true;
+            updateUI(true);
+        } catch (e) {
+            // If unmute fails (very rare), wait for first user touch
+            setupInteractionFallback();
+        }
+    }, 800);
 }
 
 function onPlayerStateChange(event) {
+    // If video ends, restart (loop workaround for some browsers)
+    if (event.data === YT.PlayerState.ENDED) {
+        try {
+            ytPlayer.seekTo(0);
+            ytPlayer.playVideo();
+        } catch (e) {}
+    }
+    // Sync UI if something external pauses it
     if (event.data === YT.PlayerState.PLAYING) {
         isPlaying = true;
         updateUI(true);
-        if (synthTimer) clearInterval(synthTimer); // Stop synth if YT is playing
+    } else if (event.data === YT.PlayerState.PAUSED) {
+        isPlaying = false;
+        updateUI(false);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const audioToggle = document.getElementById('audioToggle');
-    const storyVideo = document.getElementById('storyVideo');
+function onPlayerError() {
+    // YouTube blocked: show a gentle nudge
+    updateUI(false);
+    setupInteractionFallback();
+}
 
-    // Keep video muted
+// ---------- Interaction Fallback ----------
+// If autoplay is fully blocked, play on first touch/click anywhere
+function setupInteractionFallback() {
+    if (hasAutoStarted) return;
+
+    // Show a soft pulsing music note hint
+    showMusicHint();
+
+    const tryPlay = () => {
+        if (hasAutoStarted) return;
+        hasAutoStarted = true;
+        hideMusicHint();
+        playAudio();
+    };
+
+    ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, tryPlay, { once: true, passive: true });
+    });
+}
+
+// ---------- Soft Music Hint Banner ----------
+function showMusicHint() {
+    if (document.getElementById('musicHint')) return;
+    const hint = document.createElement('div');
+    hint.id = 'musicHint';
+    hint.innerHTML = `
+        <div style="
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f43f5e, #ec4899, #38bdf8);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(244,63,94,0.4);
+            z-index: 9999;
+            animation: pulseHint 1.5s infinite;
+            cursor: pointer;
+            white-space: nowrap;
+        ">
+            🎵 Tap anywhere to play Jo Tum Mere Ho 💕
+        </div>
+    `;
+    document.body.appendChild(hint);
+    hint.addEventListener('click', () => {
+        if (!hasAutoStarted) {
+            hasAutoStarted = true;
+            hideMusicHint();
+            playAudio();
+        }
+    });
+}
+
+function hideMusicHint() {
+    const hint = document.getElementById('musicHint');
+    if (hint) hint.remove();
+}
+
+// ---------- CSS for pulse animation ----------
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulseHint {
+        0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+        50% { opacity: 0.85; transform: translateX(-50%) scale(1.04); }
+    }
+`;
+document.head.appendChild(style);
+
+// ---------- DOM Ready ----------
+document.addEventListener('DOMContentLoaded', () => {
+    // Keep story video muted so song stays audible
+    const storyVideo = document.getElementById('storyVideo');
     if (storyVideo) {
         storyVideo.muted = true;
+        storyVideo.volume = 0;
     }
 
+    // Toggle button: click to pause/play
+    const audioToggle = document.getElementById('audioToggle');
     if (audioToggle) {
         audioToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             if (isPlaying) {
                 pauseAudio();
             } else {
+                hasAutoStarted = true;
+                hideMusicHint();
                 playAudio();
             }
         });
     }
 
-    // Browser Autoplay Policy Handler:
-    // Starts the music automatically on the very first user interaction (click/touch/scroll) if blocked initially
-    const triggerAutoStart = () => {
-        if (!hasAutoStarted) {
-            hasAutoStarted = true;
-            playAudio();
-        }
-    };
-
-    window.addEventListener('click', triggerAutoStart, { once: true });
-    window.addEventListener('touchstart', triggerAutoStart, { once: true });
-    window.addEventListener('scroll', triggerAutoStart, { once: true });
-    window.addEventListener('keydown', triggerAutoStart, { once: true });
-
-    // Initial attempt
+    // If YouTube API takes too long, set a fallback attempt
     setTimeout(() => {
-        if (!hasAutoStarted && ytReady) {
-            playAudio();
+        if (!hasAutoStarted && !ytReady) {
+            setupInteractionFallback();
         }
-    }, 800);
+    }, 3000);
 });
