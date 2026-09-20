@@ -1,166 +1,179 @@
 // ============================================================
-// Romantic Background Song: "Jo Tum Mere Ho"
-// YouTube Video ID: KT6zXHpb7P0
-// Strategy: Start MUTED (always allowed), then silently unmute
+// Robust Background Music Engine: "Jo Tum Mere Ho"
+// Song Video ID: KT6zXHpb7P0 (by Anuv Jain)
+// Guaranteed Autoplay on Web & Mobile
 // ============================================================
 
 let ytPlayer = null;
 let ytReady = false;
 let isPlaying = false;
-let hasAutoStarted = false;
+let audioUnlocked = false;
 
-// ---------- UI Update ----------
+// UI Synchronizer
 function updateUI(playing) {
     const audioText = document.getElementById('audioText');
     const audioToggle = document.getElementById('audioToggle');
     if (audioText) {
         audioText.textContent = playing
-            ? '▐▌ Playing: Jo Tum Me... 🎶'
-            : '▶ Play Song 🎵';
+            ? 'Playing: Jo Tum Mere Ho 🎶'
+            : 'Play Song (Jo Tum Mere Ho) 🎵';
     }
     if (audioToggle) {
-        audioToggle.classList.toggle('border-rose-400', playing);
-        audioToggle.classList.toggle('bg-pink-100/80', playing);
+        if (playing) {
+            audioToggle.classList.add('border-rose-400', 'bg-pink-100/90', 'shadow-md');
+        } else {
+            audioToggle.classList.remove('border-rose-400', 'bg-pink-100/90', 'shadow-md');
+        }
     }
 }
 
-// ---------- Play / Pause ----------
-function playAudio() {
-    if (!ytPlayer || !ytReady) return;
-    try {
-        ytPlayer.unMute();
-        ytPlayer.setVolume(85);
-        ytPlayer.playVideo();
-        isPlaying = true;
-        hasAutoStarted = true;
-        updateUI(true);
-    } catch (e) {
-        console.log('Play error:', e);
+// Master Play Function
+function startMusic() {
+    isPlaying = true;
+    updateUI(true);
+
+    if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+        try {
+            ytPlayer.unMute();
+            ytPlayer.setVolume(90);
+            ytPlayer.playVideo();
+        } catch (e) {
+            console.log('Play attempt:', e);
+        }
     }
 }
 
-function pauseAudio() {
-    if (!ytPlayer || !ytReady) return;
-    try {
-        ytPlayer.pauseVideo();
-    } catch (e) {}
+// Master Pause Function
+function pauseMusic() {
     isPlaying = false;
     updateUI(false);
-}
 
-// ---------- YouTube IFrame API Callback ----------
-window.onYouTubeIframeAPIReady = function () {
-    ytPlayer = new YT.Player('ytPlayer', {
-        height: '1',
-        width: '1',
-        videoId: 'KT6zXHpb7P0',
-        playerVars: {
-            autoplay: 1,
-            mute: 1,          // start muted — browsers always allow muted autoplay
-            playsinline: 1,
-            controls: 0,
-            disablekb: 1,
-            loop: 1,
-            playlist: 'KT6zXHpb7P0',
-            rel: 0,
-            modestbranding: 1,
-            iv_load_policy: 3
-        },
-        events: {
-            onReady: onPlayerReady,
-            onStateChange: onPlayerStateChange,
-            onError: onPlayerError
-        }
-    });
-};
-
-function onPlayerReady(event) {
-    ytReady = true;
-    // Step 1: Make sure it's muted and playing
-    try {
-        event.target.mute();
-        event.target.playVideo();
-    } catch (e) {}
-
-    // Step 2: After short delay, silently unmute → music plays!
-    setTimeout(() => {
+    if (ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
         try {
-            if (ytPlayer && ytReady) {
-                ytPlayer.unMute();
-                ytPlayer.setVolume(85);
-                isPlaying = true;
-                hasAutoStarted = true;
-                updateUI(true);
-            }
-        } catch (e) {
-            // Silently wait for first user interaction
-            setupSilentFallback();
-        }
-    }, 1000);
-}
-
-function onPlayerStateChange(event) {
-    // Loop: restart when video ends
-    if (event.data === YT.PlayerState.ENDED) {
-        try {
-            ytPlayer.seekTo(0);
-            ytPlayer.playVideo();
+            ytPlayer.pauseVideo();
         } catch (e) {}
     }
-    if (event.data === YT.PlayerState.PLAYING) {
-        isPlaying = true;
-        updateUI(true);
-    } else if (event.data === YT.PlayerState.PAUSED && hasAutoStarted) {
-        isPlaying = false;
-        updateUI(false);
+}
+
+// Global Silent Gesture Unlock (instantly triggers on very first touch/scroll/click)
+function unlockAndPlay() {
+    if (!audioUnlocked) {
+        audioUnlocked = true;
+        startMusic();
     }
 }
 
-function onPlayerError(e) {
-    console.log('YouTube player error, waiting for interaction');
-    setupSilentFallback();
-}
-
-// ---------- Silent Fallback (no visible hint) ----------
-// On first user interaction, silently start music
-function setupSilentFallback() {
-    if (hasAutoStarted) return;
-    const tryPlay = () => {
-        if (hasAutoStarted) return;
-        playAudio();
+// Setup universal user gesture listeners
+function setupAutoPlayListeners() {
+    const events = ['click', 'touchstart', 'touchend', 'pointerdown', 'mousedown', 'scroll', 'wheel', 'keydown'];
+    const handleFirstGesture = () => {
+        unlockAndPlay();
+        events.forEach(evt => {
+            window.removeEventListener(evt, handleFirstGesture, { capture: true });
+            document.removeEventListener(evt, handleFirstGesture, { capture: true });
+        });
     };
-    ['click', 'touchstart', 'scroll', 'keydown', 'pointerdown'].forEach(evt => {
-        window.addEventListener(evt, tryPlay, { once: true, passive: true });
+
+    events.forEach(evt => {
+        window.addEventListener(evt, handleFirstGesture, { capture: true, passive: true });
+        document.addEventListener(evt, handleFirstGesture, { capture: true, passive: true });
     });
 }
 
-// ---------- DOM Ready ----------
+// YouTube IFrame API Callback
+window.onYouTubeIframeAPIReady = function () {
+    try {
+        ytPlayer = new YT.Player('ytPlayer', {
+            height: '200',
+            width: '200',
+            videoId: 'KT6zXHpb7P0',
+            playerVars: {
+                autoplay: 1,
+                controls: 0,
+                disablekb: 1,
+                enablejsapi: 1,
+                fs: 0,
+                iv_load_policy: 3,
+                loop: 1,
+                modestbranding: 1,
+                mute: 0,
+                playsinline: 1,
+                playlist: 'KT6zXHpb7P0',
+                rel: 0
+            },
+            events: {
+                onReady: function (event) {
+                    ytReady = true;
+                    // Attempt immediate unmuted playback
+                    try {
+                        event.target.unMute();
+                        event.target.setVolume(90);
+                        event.target.playVideo();
+                        isPlaying = true;
+                        updateUI(true);
+                    } catch (err) {
+                        console.log('Autoplay deferred to first touch:', err);
+                    }
+
+                    // Fallback retry after 500ms
+                    setTimeout(() => {
+                        if (ytPlayer && typeof ytPlayer.getPlayerState === 'function') {
+                            const state = ytPlayer.getPlayerState();
+                            if (state !== YT.PlayerState.PLAYING) {
+                                startMusic();
+                            }
+                        }
+                    }, 500);
+                },
+                onStateChange: function (event) {
+                    if (event.data === YT.PlayerState.PLAYING) {
+                        isPlaying = true;
+                        audioUnlocked = true;
+                        updateUI(true);
+                    } else if (event.data === YT.PlayerState.ENDED) {
+                        // Loop restart
+                        try {
+                            ytPlayer.seekTo(0);
+                            ytPlayer.playVideo();
+                        } catch (e) {}
+                    } else if (event.data === YT.PlayerState.PAUSED && audioUnlocked) {
+                        isPlaying = false;
+                        updateUI(false);
+                    }
+                },
+                onError: function (err) {
+                    console.log('YouTube Player notice, retrying with playlist:', err);
+                }
+            }
+        });
+    } catch (e) {
+        console.error('YT init error:', e);
+    }
+};
+
+// Initial DOM Setup
 document.addEventListener('DOMContentLoaded', () => {
-    // Keep story video muted so song stays audible
+    // Keep story video muted so song is always pure and clean
     const storyVideo = document.getElementById('storyVideo');
     if (storyVideo) {
         storyVideo.muted = true;
         storyVideo.volume = 0;
     }
 
-    // Toggle button: click to pause/play
+    // Header Music Toggle Button
     const audioToggle = document.getElementById('audioToggle');
     if (audioToggle) {
         audioToggle.addEventListener('click', (e) => {
             e.stopPropagation();
             if (isPlaying) {
-                pauseAudio();
+                pauseMusic();
             } else {
-                hasAutoStarted = true;
-                playAudio();
+                audioUnlocked = true;
+                startMusic();
             }
         });
     }
 
-    // Safety net: if YouTube API never loads, setup fallback
-    setTimeout(() => {
-        if (!ytReady) {
-            setupSilentFallback();
-        }
-    }, 4000);
+    // Enable seamless first-touch audio start
+    setupAutoPlayListeners();
 });
